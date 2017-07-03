@@ -1,0 +1,38 @@
+<html>
+	<head>
+		<title>SmallTime Setup</title>
+	    <meta charset="UTF-8">
+	    <script>
+			window.nodeRequire = require;
+			delete window.require;
+			delete window.exports;
+			delete window.module;
+		</script>
+		<script type="text/javascript" src="./js/jquery-3.1.1.min.js"></script>
+    	<!--<link href="css/milligram.css" rel="stylesheet">-->
+    	<link href="css/styles.css" rel="stylesheet">
+	<body class="">
+    	<div class="topbar">
+    		<button class="button1 button2" id="Save">Save</button>
+    		<button class="button1 button2" id="Cancel">Cancel</button>
+    	</div>
+    	<div id="body">
+		  <fieldset>
+		    <legend>Database Options</legend>
+		    <input class="radio" type="radio" id="LocalDB" name="db" value="LocalDB">
+		    <label for="LocalDB">Local Database</label>
+		    <br/>
+		    <input class="subOpt" type="checkbox" id="sync"><label>Sync</label>
+		    <label for="syncUrl">URL</label><input class="url" id="syncUrl">
+		    <br/>
+		    <input class="radio" type="radio" id="RemoteDB" name="db" value="RemoteDB">
+		    <label for="RemoteDB">Remote Database</label>
+		    <br/>
+		    <label class="subOpt" for="Url">URL</label><input class="url" id="Url">
+		  </fieldset>
+    	</div>
+	</body>
+	<script>
+    	nodeRequire('./setup.js')
+  	</script>
+</html>

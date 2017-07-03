@@ -1,0 +1,169 @@
+@import url('https://fonts.googleapis.com/css?family=Oswald|Orbitron');
+
+
+body {
+	background-color: #F4F7F5;
+	//font-family: 'Oswald', sans-serif;
+}	
+
+#body {
+	margin-top: 55px;
+}	
+
+.noMargin {
+	margin:0;
+	padding:0;
+}
+
+.title {
+	font-family: 'Orbitron', sans-serif;
+	margin-top: 35px;
+	text-shadow: 1px 1px 2px black;
+	font-size: 1.7em;
+}
+
+.center, p {
+	text-align:center;
+}
+
+.bgImg {
+	background-image: url(../images/bg2.jpg);
+	color:white;
+}
+
+input {
+	margin-left: 5%;
+    width: 90%;
+    margin-top: 10px;
+}
+
+.timerBox {
+	margin-top: 7px;
+	background-color: #313131;
+	color:white;
+	border-width: 2px;
+	border-radius: 10px;
+	width:190px;
+	height:120px;
+	margin-left:7px;
+}
+
+.topbar {
+	background-color: #F4F7F5;
+	position: fixed;
+	top:0;
+	width:100%;
+	height: 44px;
+	border-bottom: ridge;
+	border-width: 4px;
+}
+
+.radio {
+	width: 20px;
+}
+
+.subOpt{
+	margin-left: 40px;
+	width: 20px;
+}
+
+.url {
+	width:50%;
+}
+
+.item {
+	border:solid;
+	border-radius:1px;
+	border-width: 2px;
+	margin:2%;
+	width:96%;
+	display: flex;
+	background-color: #84ACCE;
+	border-color: lightgray;
+}
+
+.margin-top {
+	margin-top: 10px;
+}
+
+.checkDiv {
+	flex: .4;
+	padding-top: 20px;
+}
+
+.info {
+	width:50%;
+	border-right:solid;
+	border-width: 1px;
+	flex:2;
+	margin: 10px;
+}
+
+.time {
+	width: 50%;
+	flex:5;
+	margin: 10px;
+}
+
+.button1 {
+	/*background-color: #919098;*/
+	border-color: black;
+	border-width: 1px;
+	border-radius: 1px;
+	width:85px;
+	height:30px;
+	margin-left:7px;
+	margin-top:7px;
+}
+
+.button2 {
+	width:100px;
+	border-
+}
+
+.marginTop {
+	margin-top: 15px;
+}
+
+.little {
+	width:100%;
+	min-height:20%;
+}
+
+.big {
+	text-align: center;
+	width:100%;
+	height:50%;
+}
+
+.legend {
+	margin: 0;
+	width:100%;
+	height:10%;
+}
+
+.legend > p {
+	margin: 0;
+	text-align: center;
+	display: inline-block;
+	width:32%;
+	font-size: .7em;
+}
+
+.big > p {
+    font-size: 3em;
+    margin: 0;
+}
+.little > p{
+	margin:0;
+	margin-left:15px;
+}
+
+.progress {
+	position: absolute;
+	margin:0;
+	top:95px;
+	width:100%;
+	min-height:5px;
+	background-color: #313131;
+}

@@ -1,0 +1,12 @@
+{
+  "name": "SmallTime",
+  "version": "0.1.0",
+  "main": "main.js",
+  "dependencies": {
+    "pouchdb": "latest"
+  },
+  "devDependencies": {
+    "electron-rebuild": "1.5.10"
+
+  }
+}

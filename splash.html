@@ -1,0 +1,23 @@
+<html>
+	<head>
+		<title>Splash</title>
+	    <meta charset="UTF-8">
+	    <script>
+			window.nodeRequire = require;
+			delete window.require;
+			delete window.exports;
+			delete window.module;
+		</script>
+		<script type="text/javascript" src="./js/jquery-3.1.1.min.js"></script>
+		<script type="text/javascript" src="./js/velocity.min.js"></script>
+    	<!--<link href="css/milligram.css" rel="stylesheet">-->
+    	<link href="css/styles.css" rel="stylesheet">
+	</head>
+	<body class="bgImg noMargin">
+		<h2 class="center title">SmallTime Timer</h2>
+		<div class="progress"><div id="p"></div></div>
+	</body>
+	<script>
+    	nodeRequire('./splash.js')
+  	</script>
+</html>
