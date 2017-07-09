@@ -1,1 +1,1 @@
-{"db":{"type":"RemoteDB","sync":false,"url":"http://127.0.0.1:5984"},"position":{"x":100,"y":50},"setupComplete":true,"timerFrame":true}
+{"db":{"type":"LocalDB","sync":false,"url":""},"position":{"x":100,"y":50},"setupComplete":true,"timerFrame":true}

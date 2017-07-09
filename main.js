@@ -1,59 +1,42 @@
 "use strict";
 // main thread file for SmallTime 
 //require('require-rebuild')();
-const PouchDB = require('pouchdb');
-const {app, BrowserWindow, webContents, Menu} = require('electron');
+//const PouchDB = require('pouchdb');
+const {app, BrowserWindow, webContents, Menu, ipcMain} = require('electron');
 const path = require('path');
 const url = require('url');
 const fs = require('fs')
 
-
-let timeDB;
-let win;
-let splash;
-let recap;
+let timer;
+let mainWindow;
 let setupWindow;
-let initOptions;
+let savingModalWindow;
 
 (function init () {
   app.on('ready',function () {
-    readSetup(createTimerWindow)
+    console.log(process.argv)
+    if (process.argv[2] == 'dashboard') {
+      readSetup(function () {global.mainWindowFunction('dashboard',null)})
+    }else{
+      readSetup(function () {global.createTimerWindow()})
+    }
   })
 })()
 
 
-function createTimerWindow (initOptions){
-  if (win == null||undefined) {
-  	win = new BrowserWindow({frame:initOptions.timerFrame,width: 220, height: 210,titleBarStyle:'hidden-inset',resizable:false, x:initOptions.position.x, y:initOptions.position.y})
-    //Menu.setApplicationMenu(null)
-  	/*splash = new BrowserWindow({parent: win,modal: true,width: 300, height: 100,frame: false,show:false})
-    	splash.loadURL(url.format({
-      	pathname: path.join(__dirname, 'splash.html'),
-      	protocol: 'file:',
-      	slashes: true
-    	}))*/
-  	win.loadURL(url.format({
-    	pathname: path.join(__dirname, 'index.html'),
+
+global.createTimerWindow = function(){
+  if (timer == null||undefined) {
+    var initOptions = global.initOptions
+  	timer = new BrowserWindow({frame:initOptions.timerFrame,width: 220, height: 210,titleBarStyle:'hidden-inset',resizable:false, x:initOptions.position.x, y:initOptions.position.y})
+  	timer.loadURL(url.format({
+    	pathname: path.join(__dirname, 'timer.html'),
     	protocol: 'file:',
     	slashes: true
   	}))
-    	
-    	/*splash.on('ready-to-show',function() {
-    		splash.show()
-  	  	var killSplash = setInterval(function(){
-  	  		splash.close();
-  	  		clearInterval(killSplash)
-  	  	},3500)
-  	})*/
-  	
-  	win.on('ready-to-show',function () {
-  		win.show()
+  	timer.on('ready-to-show',function () {
+  		timer.show()
   	})
-
-    	/*var string = JSON.stringify(Menu.getApplicationMenu())
-    	fs.writeFile('menu.json', string , (err) => {
-    		if (err) {throw err}
-    	})*/
   }
 }
 
@@ -61,27 +44,13 @@ function readSetup (loadWindow) {
   fs.readFile('options.json','utf8',(err, data) => {
     if (err) throw err;
     global.initOptions = JSON.parse(data)
-    if (global.initOptions.setupComplete == true) {
-      if (global.initOptions.db.type == "LocalDB") {
-        timeDB = new PouchDB('times')
-        if (global.initOptions.sync == true) {
-        }
-      }else if (global.initOptions.db.type == "RemoteDB") {
-        timeDB = new PouchDB(url + '/times')
-      }
-      timeDB.info().then(function (info) {
-        console.log(info);
-      })
-    }
-
-
-    loadWindow(global.initOptions)
-    console.log(global.initOptions)
+    //console.log(global.initOptions)
+    loadWindow()
   });
 }
 
-function setup (parent, nextAction) { 
-  setupWindow = new BrowserWindow ({parent: parent,modal: true,width:400, height:400, show:false})
+global.setup = function (nextAction) { 
+  setupWindow = new BrowserWindow ({parent: mainWindow,modal: true,width:400, height:400, show:false})
 
   setupWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'setup.html'),
@@ -95,36 +64,37 @@ function setup (parent, nextAction) {
   })
 }
 
-global.remoteData = function (obj) {
-	recap = new BrowserWindow({width: 800, height: 600,titleBarStyle: 'hiddenInset',show:false})
-	//console.log(obj)
+global.mainWindowFunction = function (page, data) {
+  //console.log('mainWindowFunction')
+	if (mainWindow == null) {
+    mainWindow = new BrowserWindow({width: 800, height: 600,titleBarStyle: 'hiddenInset',show:false})
 
-	recap.loadURL(url.format({
-    	pathname: path.join(__dirname, 'TimeRecap.html'),
+    mainWindow.on('closed', () => {
+      mainWindow = null
+    })
+  }else{
+
+  }
+  if (page == 'TimeRecap') {
+    mainWindow.loadURL(url.format({
+    	pathname: path.join(__dirname, 'timeRecap.html'),
     	protocol: 'file:',
     	slashes: true
   	}))
-
-
-  	recap.on('ready-to-show',function () {
-  		recap.webContents.send('displayTimes', obj)
-  		recap.show()
-
+  	mainWindow.on('ready-to-show',function () {
+  		mainWindow.webContents.send('displayTimes', data)
+  		mainWindow.show()
   	})
-}
-
-global.saveDB = function (data) {
-  //console.log('saveDB ')
-
-  if(global.initOptions.setupComplete == false ) {
-    //console.log('!! Setup  not complete')
-    setup(recap, function () {saveDB(data)})
-  }else {
-    for (var i = 0; data.length > i ; i++) {
-      if (data[i].status == "active") {
-        console.log(data[i])
-      }
-    } 
+  }else if (page == 'dashboard') {
+    mainWindow.loadURL(url.format({
+      pathname: path.join(__dirname, 'dashboard.html'),
+      protocol: 'file:',
+      slashes: true
+    }))
+    mainWindow.on('ready-to-show',function () {
+      //mainWindow.webContents.send('displayTimes', data)
+      mainWindow.show()
+    })
   }
 }
 
@@ -133,10 +103,42 @@ global.saveSetup = function (data) {
   var string = JSON.stringify(data)
   fs.writeFile('options.json', string , (err) => {
     if (err) {throw err}
+    readSetup(createTimerWindow)
   })
-  readSetup(createTimerWindow)
 }
 
+ipcMain.on('clearTimes',function () {
+  if (timer != null) {
+    timer.webContents.send('clearTimeData')
+  }
+})
 
+ipcMain.on('savingModal', function (event, action, data) {
+  if (action == 'new') {
+    savingModalWindow = new BrowserWindow({parent: mainWindow,modal: true,width: 300, height: 150,frame: false,show:false})
+    savingModalWindow.loadURL(url.format({
+      pathname: path.join(__dirname, 'savingModal.html'),
+      protocol: 'file:',
+      slashes: true
+    }))
 
+    savingModalWindow.on('ready-to-show',function () {
+      event.sender.send('savingModalReady','ready')
+      savingModalWindow.webContents.send(action, data)
+      savingModalWindow.show()
 
+    })
+  }else{
+    savingModalWindow.webContents.send(action, data)
+  }
+})
+
+ipcMain.on('closeSavingModal', function (event, action) {
+  savingModalWindow.close()
+  if (action == 'close') {
+    mainWindow.close()
+  }else if (action == 'dashboard') {
+    mainWindow.close()
+    global.mainWindowFunction('dashboard',null)
+  } 
+})
