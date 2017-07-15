@@ -9,6 +9,7 @@ const fs = require('fs')
 
 let timer;
 let mainWindow;
+let recapWindow;
 let setupWindow;
 let savingModalWindow;
 
@@ -66,35 +67,46 @@ global.setup = function (nextAction) {
 
 global.mainWindowFunction = function (page, data) {
   //console.log('mainWindowFunction')
-	if (mainWindow == null) {
-    mainWindow = new BrowserWindow({width: 800, height: 600,titleBarStyle: 'hiddenInset',show:false})
 
-    mainWindow.on('closed', () => {
-      mainWindow = null
-    })
-  }else{
-
-  }
   if (page == 'TimeRecap') {
-    mainWindow.loadURL(url.format({
-    	pathname: path.join(__dirname, 'timeRecap.html'),
-    	protocol: 'file:',
-    	slashes: true
-  	}))
-  	mainWindow.on('ready-to-show',function () {
-  		mainWindow.webContents.send('displayTimes', data)
-  		mainWindow.show()
-  	})
-  }else if (page == 'dashboard') {
-    mainWindow.loadURL(url.format({
-      pathname: path.join(__dirname, 'dashboard.html'),
+
+    recapWindow = new BrowserWindow({width: 800, height: 600,titleBarStyle: 'hiddenInset',show:false})
+
+    recapWindow.on('closed', () => {
+      recapWindow = null
+    })
+    recapWindow.loadURL(url.format({
+      pathname: path.join(__dirname, 'timeRecap.html'),
       protocol: 'file:',
       slashes: true
     }))
-    mainWindow.on('ready-to-show',function () {
-      //mainWindow.webContents.send('displayTimes', data)
-      mainWindow.show()
+    recapWindow.on('ready-to-show',function () {
+      recapWindow.webContents.send('displayTimes', data)
+      recapWindow.show()
     })
+  }else{
+
+  //console.log('mainWindowFunction')
+  	if (mainWindow == null) {
+      mainWindow = new BrowserWindow({width: 800, height: 600,titleBarStyle: 'hiddenInset',show:false})
+
+      mainWindow.on('closed', () => {
+        mainWindow = null
+      })
+    }else{
+
+    }
+    if (page == 'dashboard') {
+      mainWindow.loadURL(url.format({
+        pathname: path.join(__dirname, 'dashboard.html'),
+        protocol: 'file:',
+        slashes: true
+      }))
+      mainWindow.on('ready-to-show',function () {
+        //mainWindow.webContents.send('displayTimes', data)
+        mainWindow.show()
+      })
+    }
   }
 }
 
@@ -136,9 +148,18 @@ ipcMain.on('savingModal', function (event, action, data) {
 ipcMain.on('closeSavingModal', function (event, action) {
   savingModalWindow.close()
   if (action == 'close') {
-    mainWindow.close()
+    recapWindow.close()
   }else if (action == 'dashboard') {
-    mainWindow.close()
+    recapWindow.close()
     global.mainWindowFunction('dashboard',null)
   } 
+})
+
+ipcMain.on('mainWindowEvent', function (event, options) {
+  console.log('mainWindowEvent')
+  global.mainWindowFunction(options[0],options[1])
+})
+
+ipcMain.on('launchTimer', function (event) {
+  global.createTimerWindow()
 })
