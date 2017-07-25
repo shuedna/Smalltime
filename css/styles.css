@@ -59,10 +59,15 @@ body {
 	color:white;
 }
 
-input {
+input, select {
 	margin-left: 5%;
     width: 90%;
     margin-top: 10px;
+}
+
+.input {
+	width: 60%;
+	margin-right: 10px;
 }
 
 .timerBox {
@@ -243,7 +248,14 @@ button:active {
 	height:25px;
 }
 
-.button
+.button4 {
+	width: 150px;
+	background-color: #F4F7F5;
+}
+
+.noBorder {
+	border:none;
+}
 
 .marginTop {
 	margin-top: 15px;
